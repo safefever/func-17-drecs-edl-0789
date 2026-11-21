@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="es-PR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="showroom">
+  <title>Función #17 del Director de Escuela en Puerto Rico — Portal Interactivo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@100..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces (Showroom) */
+      --background: #fbfbfd;
+      --surface-container-low: #f5f5f7;
+      --surface-container: #e8e8ed;
+      --surface-container-high: #dcdce1;
+
+      /* Ink */
+      --on-surface: #1d1d1f;
+      --on-surface-variant: #6e6e73;
+
+      /* Rules */
+      --outline: #d2d2d7;
+      --outline-variant: #e5e5ea;
+
+      /* Accents */
+      --primary: #006bd6;
+      --on-primary: #ffffff;
+      --primary-container: #e8f1fd;
+      --on-primary-container: #0058b0;
+      --secondary: #bf4800;
+      --tertiary: #1d1d1f;
+      --error: #d70015;
+      --on-error: #ffffff;
+
+      /* Data series */
+      --data-1: #006bd6;
+      --data-2: #bf4800;
+      --data-3: #248a3d;
+      --data-4: #8944ab;
+      --data-context: #aeaeb2;
+
+      /* Fonts */
+      --font-headline: 'Inter Tight', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-label: 'Inter', sans-serif;
+
+      /* Shape */
+      --rounded: 9999px;
+      --rounded-md: 0.75rem;
+      --rounded-lg: 1.25rem;
+      --rounded-full: 9999px;
+
+      /* Style effects */
+      --headline-tracking: -0.035em;
+      --subhead-tracking: -0.02em;
+      --figure-tracking: -0.03em;
+      --tile-shadow-hover: 0 8px 28px rgb(0 0 0 / 0.08);
+      --chevron: " \203A";
+
+      /* Shared semantic tokens */
+      --positive: #248a3d;
+      --positive-container: #e7f5eb;
+      --warning: #bf4800;
+      --warning-container: #fdf0e8;
+      --error-container: #fdeaea;
+      --focus: var(--primary);
+
+      /* Type scale (Dashboard / Data Explorer) */
+      --display-size: clamp(1.875rem, 1.4rem + 1.6vw, 2.75rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .page-grid {
+      display: grid;
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      max-width: 1240px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Centered Headline Stack (Showroom Treatment #1) */
+    .headline-stack {
+      text-align: center;
+      padding-block: var(--space-xl) var(--space-lg);
+    }
+    .eyebrow {
+      display: inline-block;
+      font-family: var(--font-label);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--secondary);
+      margin-bottom: var(--space-sm);
+    }
+    .headline-stack h1 {
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 700;
+      letter-spacing: var(--headline-tracking);
+      line-height: 1.06;
+      color: var(--on-surface);
+      margin: 0 auto;
+      max-width: 24ch;
+    }
+    .headline-stack .lede {
+      font-size: var(--subhead-size);
+      color: var(--on-surface-variant);
+      max-width: 58ch;
+      margin: var(--space-md) auto 0;
+      line-height: 1.5;
+    }
+    .byline-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+
+    /* Pill Actions & Links (Showroom Treatment #3) */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      background: var(--primary);
+      color: var(--on-primary);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: var(--space-sm) var(--space-lg);
+      border: 0;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-in-out), transform var(--dur-micro) var(--ease-out);
+    }
+    .btn-primary:hover {
+      background: var(--on-primary-container);
+    }
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      background: var(--surface-container);
+      color: var(--on-surface);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: var(--space-sm) var(--space-lg);
+      border: 0;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-in-out);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-container-high);
+    }
+    .link-more {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding-inline: var(--space-sm);
+      color: var(--primary);
+      font-weight: 500;
+      font-size: 0.9375rem;
+      text-decoration: none;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+    }
+    .link-more::after { content: var(--chevron); }
+    .link-more:hover { text-decoration: underline; }
+
+    /* Filter Toolbar */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-sm);
+    }
+    .filter-chip {
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      border: 0;
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-in-out), color var(--dur-micro) var(--ease-in-out);
+    }
+    .filter-chip:hover {
+      background: var(--surface-container);
+    }
+    .filter-chip.active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    /* Bento Grid System */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: var(--space-md);
+      align-items: stretch;
+    }
+
+    /* Borderless Rounded Tiles (Showroom Treatment #2) */
+    .tile {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      border: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      transition: opacity var(--dur-short) var(--ease-in-out), transform var(--dur-long) var(--ease-out);
+    }
+    .tile.is-dimmed {
+      opacity: 0.36;
+    }
+    .tile.is-highlighted {
+      box-shadow: var(--tile-shadow-hover);
+    }
+    .tile.figure {
+      text-align: center;
+      justify-content: center;
+      padding: var(--space-lg) var(--space-md);
+      gap: var(--space-xs);
+    }
+    .tile.figure .label {
+      color: var(--on-surface-variant);
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+    .tile.figure .value {
+      font-family: var(--font-headline);
+      font-size: clamp(1.75rem, 1.35rem + 1.2vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: var(--figure-tracking);
+      line-height: 1.1;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+    }
+    .tile.figure .caption {
+      color: var(--on-surface-variant);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+
+    .span-12 { grid-column: span 12; }
+    .span-8 { grid-column: span 8; }
+    .span-7 { grid-column: span 7; }
+    .span-6 { grid-column: span 6; }
+    .span-5 { grid-column: span 5; }
+    .span-4 { grid-column: span 4; }
+
+    /* Tile Headings & Chips */
+    .tile-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+    .tile-eyebrow {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--secondary);
+      display: block;
+      margin-bottom: var(--space-xs);
+    }
+    .tile-title {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 700;
+      letter-spacing: var(--subhead-tracking);
+      line-height: 1.15;
+      margin: 0;
+      color: var(--on-surface);
+    }
+    .tile-desc {
+      color: var(--on-surface-variant);
+      margin: 0;
+      max-width: 65ch;
+      font-size: var(--body-size);
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .chip.positive {
+      background: var(--positive-container);
+      color: var(--positive);
+    }
+    .chip.warning {
+      background: var(--warning-container);
+      color: var(--warning);
+    }
+
+    /* Segmented Controls */
+    .segmented {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      padding: var(--space-xs);
+      background: var(--surface-container);
+      border-radius: var(--rounded-lg);
+      align-self: flex-start;
+    }
+    .seg-btn {
+      min-height: 40px;
+      padding: var(--space-xs) var(--space-md);
+      border: 0;
+      border-radius: var(--rounded-md);
+      background: transparent;
+      color: var(--on-surface);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-in-out), color var(--dur-micro) var(--ease-in-out);
+    }
+    .seg-btn[aria-selected="true"], .seg-btn.active {
+      background: var(--background);
+      color: var(--on-surface);
+    }
+
+    /* Sub-panels inside tiles (step back to --background for borderless contrast) */
+    .sub-panel {
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .sub-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+    .sub-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+
+    /* Interactive Practice List */
+    .practice-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .practice-item {
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-sm) var(--space-md);
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: var(--space-md);
+      align-items: start;
+    }
+    .practice-code {
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      padding-top: 0.1rem;
+    }
+    .practice-text {
+      margin: 0;
+      font-size: 0.9375rem;
+      color: var(--on-surface);
+      line-height: 1.45;
+    }
+    .practice-meta {
+      display: block;
+      color: var(--on-surface-variant);
+      font-size: 0.8125rem;
+      margin-top: var(--space-xs);
+    }
+
+    /* Form Controls inside Request Simulator */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-md);
+      align-items: end;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .field label {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--on-surface);
+    }
+    .control-select, .control-input {
+      min-height: 44px;
+      width: 100%;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline);
+      background: var(--background);
+      color: var(--on-surface);
+      font-size: 0.9375rem;
+    }
+    .control-select {
+      padding-right: var(--space-xl);
+    }
+    .control-select:focus, .control-input:focus {
+      border-color: var(--primary);
+      outline: 2px solid var(--focus);
+      outline-offset: 1px;
+    }
+    .toggle-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-sm);
+    }
+    .check-pill {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: var(--on-surface);
+    }
+    .check-pill input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    /* Verdict readout */
+    .verdict-box {
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .verdict-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .verdict-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.0625rem;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    /* Clickable Space / Alliance Selector Cards */
+    .option-card {
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-md);
+      border: 0;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      color: var(--on-surface);
+      transition: box-shadow var(--dur-short) var(--ease-out), background-color var(--dur-micro) var(--ease-in-out);
+    }
+    .option-card:hover {
+      box-shadow: var(--tile-shadow-hover);
+    }
+    .option-card.active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .option-card .opt-title {
+      font-weight: 600;
+      font-size: 0.9375rem;
+    }
+    .option-card .opt-sub {
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+    }
+    .option-card.active .opt-sub {
+      color: var(--on-primary-container);
+    }
+
+    /* Chart Container */
+    .chart-wrap {
+      position: relative;
+      min-height: 250px;
+      width: 100%;
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-md);
+    }
+
+    /* 6-Step Operational Flow */
+    .stepper-track {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: var(--space-sm);
+    }
+    .step-btn {
+      background: var(--background);
+      border: 0;
+      border-radius: var(--rounded-md);
+      padding: var(--space-md) var(--space-sm);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      min-height: 88px;
+      color: var(--on-surface);
+      transition: box-shadow var(--dur-short) var(--ease-out), background-color var(--dur-micro) var(--ease-in-out);
+    }
+    .step-btn:hover {
+      box-shadow: var(--tile-shadow-hover);
+    }
+    .step-btn.active {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .step-num {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.125rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--primary);
+    }
+    .step-btn.active .step-num {
+      color: var(--on-primary);
+    }
+    .step-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    /* Checklist */
+    .checklist-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .progress-track {
+      height: 8px;
+      width: 100%;
+      background: var(--surface-container);
+      border-radius: var(--rounded);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--positive);
+      border-radius: var(--rounded);
+      transition: width var(--dur-short) var(--ease-out);
+    }
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      background: var(--background);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded-md);
+      cursor: pointer;
+      min-height: 44px;
+    }
+    .checklist-item input {
+      margin-top: 0.2rem;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--positive);
+      flex-shrink: 0;
+    }
+    .checklist-item.done .chk-title {
+      text-decoration: line-through;
+      color: var(--on-surface-variant);
+    }
+    .chk-title {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--on-surface);
+      display: block;
+    }
+    .chk-ref {
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+      display: block;
+    }
+
+    /* Table */
+    .table-scroll {
+      overflow-x: auto;
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-sm) var(--space-md);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9375rem;
+    }
+    th {
+      text-align: left;
+      color: var(--on-surface-variant);
+      font-weight: 500;
+      font-size: 0.8125rem;
+      padding: var(--space-sm) var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+      white-space: nowrap;
+    }
+    td {
+      padding: var(--space-md) var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+      vertical-align: top;
+      color: var(--on-surface);
+    }
+    tr:last-child td { border-bottom: 0; }
+
+    /* APA 7 References */
+    .apa-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .apa-item {
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-sm) var(--space-md);
+      padding-left: var(--space-xl);
+      text-indent: calc(-1 * var(--space-md));
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: var(--on-surface);
+    }
+
+    /* Inline SVG Library Schematic */
+    .svg-diagram {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: var(--background);
+      border-radius: var(--rounded-md);
+      padding: var(--space-sm);
+    }
+
+    /* Footer */
+    .page-footer {
+      text-align: center;
+      padding: var(--space-lg) var(--space-md) var(--space-xl);
+      color: var(--on-surface-variant);
+      font-size: 0.875rem;
+    }
+
+    .inline-status {
+      font-size: 0.8125rem;
+      color: var(--positive);
+      font-weight: 500;
+      min-height: 1.25em;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 960px) {
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .span-8, .span-7, .span-6, .span-5, .span-4 { grid-column: span 12; }
+      .stepper-track { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .sub-grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .page-grid { padding: var(--space-md); gap: var(--space-md); }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .form-grid, .toggle-row, .sub-grid-2, .sub-grid-3 { grid-template-columns: 1fr; }
+      .stepper-track { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tile { padding: var(--space-md); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page-grid">
+    <!-- Hero / Centered Headline Stack -->
+    <header class="headline-stack">
+      <span class="eyebrow">Departamento de Educación de Puerto Rico · Formulario DE-16 y Estándares OCA3E</span>
+      <h1>Función #17 del Director de Escuela: Escuela abierta a su comunidad</h1>
+      <p class="lede">
+        Panel interactivo de gestión escolar para facilitar a la comunidad los servicios y recursos del plantel educativo conforme a la Ley 85-2018, los Estándares Profesionales del Director de Escuela (2022) y el Plan Estratégico 2026–2030.
+      </p>
+      <div class="byline-pill">
+        <i data-lucide="user-check" width="16" height="16" aria-hidden="true"></i>
+        <span>Creado por el Dr. Enrique Cordero Soto, en colaboración con IA</span>
+      </div>
+      <div class="hero-actions">
+        <button type="button" class="btn-primary" onclick="scrollToSection('modulo-evaluador')">
+          Evaluar solicitud comunitaria
+        </button>
+        <button type="button" class="link-more" onclick="scrollToSection('modulo-flujo')">
+          Ver protocolo paso a paso
+        </button>
+      </div>
+    </header>
+
+    <!-- Cross-Filter Toolbar -->
+    <nav class="filter-bar" aria-label="Filtro por dimensión de gestión">
+      <button type="button" class="filter-chip active" data-filter="all" onclick="applyDimensionFilter('all', this)">Todos los módulos</button>
+      <button type="button" class="filter-chip" data-filter="marco" onclick="applyDimensionFilter('marco', this)">Mandato y Gobernanza</button>
+      <button type="button" class="filter-chip" data-filter="espacios" onclick="applyDimensionFilter('espacios', this)">Infraestructura y Biblioteca</button>
+      <button type="button" class="filter-chip" data-filter="alianzas" onclick="applyDimensionFilter('alianzas', this)">Alianzas y Voluntariado</button>
+      <button type="button" class="filter-chip" data-filter="salud" onclick="applyDimensionFilter('salud', this)">Salud y Bienestar</button>
+    </nav>
+
+    <!-- Top KPI Figure Row -->
+    <section class="kpi-grid" aria-label="Indicadores clave del mandato">
+      <article class="tile figure">
+        <span class="label">Formulario DE-16</span>
+        <span class="value">Tarea #17</span>
+        <span class="caption">Facilitar servicios y recursos escolares a la comunidad</span>
+      </article>
+      <article class="tile figure">
+        <span class="label">Marco OCA3E (2022)</span>
+        <span class="value">2 estándares</span>
+        <span class="caption">Líder Comunitario (#2) y Líder Administrativo (#3)</span>
+      </article>
+      <article class="tile figure">
+        <span class="label">Meta Estratégica 2 (2026–2030)</span>
+        <span class="value">100 %</span>
+        <span class="caption">Escuelas con servicios biopsicosociales activos</span>
+      </article>
+      <article class="tile figure">
+        <span class="label">Protocolo operacional</span>
+        <span class="value">6 fases</span>
+        <span class="caption">De la solicitud comunitaria al registro en PCS y ORE</span>
+      </article>
+    </section>
+
+    <!-- Main Bento Grid -->
+    <section class="bento-grid" aria-label="Módulos de gestión de la Función 17">
+
+      <!-- Módulo 1: Marco y Mandato Institucional (Span 7) -->
+      <article class="tile span-7" data-tags="marco" id="modulo-marco">
+        <div class="tile-header">
+          <div>
+            <span class="tile-eyebrow">01 · Marco normativo y liderazgo</span>
+            <h2 class="tile-title">Marco y mandato institucional</h2>
+          </div>
+          <span class="chip">Base legal vigente</span>
+        </div>
+        <p class="tile-desc">
+          El Director de Escuela representa al plantel ante la comunidad y articula el uso responsable de sus recursos bajo cuatro pilares oficiales del sistema público de Puerto Rico.
+        </p>
+
+        <div class="segmented" role="tablist" aria-label="Fuentes del mandato institucional">
+          <button type="button" class="seg-btn active" role="tab" aria-selected="true" onclick="selectMarcoTab('de16', this)">DE-16 (Tarea #17)</button>
+          <button type="button" class="seg-btn" role="tab" aria-selected="false" onclick="selectMarcoTab('ley85', this)">Ley 85-2018</button>
+          <button type="button" class="seg-btn" role="tab" aria-selected="false" onclick="selectMarcoTab('est2', this)">OCA3E Estándar 2</button>
+          <button type="button" class="seg-btn" role="tab" aria-selected="false" onclick="selectMarcoTab('est3', this)">OCA3E Estándar 3</button>
+        </div>
+
+        <div id="marco-content" class="sub-panel" aria-live="polite"></div>
+      </article>
+
+      <!-- Módulo 2: Evaluador Interactivo de Solicitud Comunitaria (Span 5) -->
+      <article class="tile span-5" data-tags="marco espacios alianzas" id="modulo-evaluador">
+        <div class="tile-header">
+          <div>
+            <span class="tile-eyebrow">Herramienta de decisión directiva</span>
+            <h2 class="tile-title">Evaluador de viabilidad comunitaria</h2>
+          </div>
+          <span class="chip positive">Simulador normativo</span>
+        </div>
+        <p class="tile-desc">
+          Verifique si una solicitud de uso de recursos escolares cumple con el horario lectivo, la seguridad y los acuerdos aplicables.
+        </p>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="sim-recurso">Recurso o espacio solicitado</label>
+            <select id="sim-recurso" class="control-select" onchange="evaluateRequest()">
+              <option value="cancha">Cancha bajo techo o área deportiva</option>
+              <option value="biblioteca">Biblioteca Escolar Comunitaria e Internet</option>
+              <option value="multiusos">Salón multiusos o salones de clase</option>
+              <option value="salud">Plantel para vacunación o clínica preventiva</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="sim-horario">Franja horaria propuesta</label>
+            <select id="sim-horario" class="control-select" onchange="evaluateRequest()">
+              <option value="extendido">Horario extendido (después de clases / sábados)</option>
+              <option value="lectivo_integrado">Horario regular integrado al currículo</option>
+              <option value="lectivo_externo">Horario lectivo ajeno al currículo escolar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="sim-entidad">Entidad o grupo solicitante</label>
+          <select id="sim-entidad" class="control-select" onchange="evaluateRequest()">
+            <option value="tercer_sector">Entidad sin fines de lucro / Tercer Sector (Art. 11.03)</option>
+            <option value="corporacion">Corporación en Alianza Corporativa gratuita (Art. 11.04)</option>
+            <option value="municipio">Municipio o agencia estatal de salud/seguridad</option>
+            <option value="padres">Madres, padres o voluntarios escolares (Est. 2.1.2)</option>
+          </select>
+        </div>
+
+        <div class="toggle-row" role="group" aria-label="Requisitos de salvaguarda">
+          <label class="check-pill">
+            <input type="checkbox" id="chk-seguridad" checked onchange="evaluateRequest()">
+            <span>Plan de seguridad y salubridad</span>
+          </label>
+          <label class="check-pill">
+            <input type="checkbox" id="chk-consejo" checked onchange="evaluateRequest()">
+            <span>Consulta al Consejo Escolar</span>
+          </label>
+        </div>
+
+        <div id="verdict-output" class="verdict-box" aria-live="polite"></div>
+      </article>
+
+      <!-- Módulo 3: Infraestructura y Espacios Físicos (Span 6) -->
+      <article class="tile span-6" data-tags="espacios" id="modulo-infraestructura">
+        <div class="tile-header">
+          <div>
+            <span class="tile-eyebrow">02 · Planta física y tiempo lectivo</span>
+            <h2 class="tile-title">Infraestructura y espacios físicos</h2>
+          </div>
+          <span class="chip">Art. 8.01 · Est. 3.2.9</span>
+        </div>
+        <p class="tile-desc">
+          La Ley 85-2018 concibe los planteles como centros vibrantes de desarrollo comunitario, siempre resguardando el tiempo lectivo, la seguridad y la salubridad.
+        </p>
+
+        <div class="sub-grid-2" role="group" aria-label="Espacios físicos del plantel">
+          <button type="button" class="option-card active" onclick="selectSpace('canchas', this)">
+            <span class="opt-title">Canchas bajo techo y áreas deportivas</span>
+            <span class="opt-sub">Ligas juveniles y recreación comunitaria</span>
+          </button>
+          <button type="button" class="option-card" onclick="selectSpace('multiusos', this)">
+            <span class="opt-title">Salones multiusos y facilidades</span>
+            <span class="opt-sub">Escuelas de arte, música y talleres</span>
+          </button>
+          <button type="button" class="option-card" onclick="selectSpace('comedores', this)">
+            <span class="opt-title">Comedores escolares y nutrición</span>
+            <span class="opt-sub">Desayuno, almuerzo y transiciones ordenadas</span>
+          </button>
+          <button type="button" class="option-card" onclick="selectSpace('seguridad', this)">
+            <span class="opt-title">Seguridad, salubridad y horario extendido</span>
+            <span class="opt-sub">Guías uniformes y protección del tiempo lectivo</span>
+          </button>
+        </div>
+
+        <div id="space-detail" class="sub-panel" aria-live="polite"></div>
+      </article>
+
+      <!-- Módulo 4: Biblioteca Escolar Comunitaria (Span 6) -->
+      <article class="tile span-6" data-tags="espacios" id="modulo-biblioteca">
+        <div class="tile-header">
+          <div>
+            <span class="tile-eyebrow">03 · Acceso abierto al conocimiento</span>
+            <h2 class="tile-title">Biblioteca Escolar Comunitaria</h2>
+          </div>
+          <span class="chip positive">Ley 85-2018 · Inciso 55</span>
+        </div>
+        <p class="tile-desc">
+          Toda escuela pública —administrada por el Departamento o como Escuela Pública Alianza— debe operar una biblioteca accesible para estudiantes, maestros, familias y comunidad en general.
+        </p>
+
+        <svg class="svg-diagram" viewBox="0 0 600 170" role="img" aria-label="Componentes obligatorios de la Biblioteca Escolar Comunitaria según Ley 85-2018" xmlns="http://www.w3.org/2000/svg">
+          <rect x="8" y="10" width="184" height="150" rx="14" fill="#f5f5f7"/>
+          <rect x="208" y="10" width="184" height="150" rx="14" fill="#f5f5f7"/>
+          <rect x="408" y="10" width="184" height="150" rx="14" fill="#e8f1fd"/>
+
+          <circle cx="36" cy="40" r="14" fill="#006bd6"/>
+          <text x="36" y="45" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-size="13" font-weight="700">1</text>
+          <text x="60" y="44" fill="#1d1d1f" font-family="Inter Tight, sans-serif" font-size="15" font-weight="700">Personal certificado</text>
+          <text x="24" y="76" fill="#6e6e73" font-family="Inter, sans-serif" font-size="12">Maestros bibliotecarios</text>
+          <text x="24" y="94" fill="#6e6e73" font-family="Inter, sans-serif" font-size="12">debidamente certificados</text>
+          <text x="24" y="112" fill="#6e6e73" font-family="Inter, sans-serif" font-size="12">y capacitados para guiar</text>
+          <text x="24" y="130" fill="#6e6e73" font-family="Inter, sans-serif" font-size="12">competencias informacionales.</text>
+
+          <circle cx="236" cy="40" r="14" fill="#bf4800"/>
+          <text x="236" y="45" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-size="13" font-weight="700">2</text>
+          <text x="260" y="44" fill="#1d1d1f" font-family="Inter Tight, sans-serif" font-size="15" font-weight="700">Banda ancha e impreso</text>
+          <text x="224" y="76" fill="#6e6e73" font-family="Inter, sans-serif" font-size="12">Acervo de material impreso</text>
+          <text x="224" y="94" fill="#6e6e73" font-family="Inter, sans-serif" font-size="12">y equipo tecnológico con</text>
+          <text x="224" y="112" fill="#6e6e73" font-family="Inter, sans-serif" font-size="12">Internet de banda ancha</text>
+          <text x="224" y="130" fill="#6e6e73" font-family="Inter, sans-serif" font-size="12">y uso de plataformas LMS.</text>
+
+          <circle cx="436" cy="40" r="14" fill="#248a3d"/>
+          <text x="436" y="45" text-anchor="middle" fill="#ffffff" font-family="Inter, sans-serif" font-size="13" font-weight="700">3</text>
+          <text x="460" y="44" fill="#0058b0" font-family="Inter Tight, sans-serif" font-size="15" font-weight="700">Horario comunitario</text>
+          <text x="424" y="76" fill="#1d1d1f" font-family="Inter, sans-serif" font-size="12">Apertura coordinada para</text>
+          <text x="424" y="94" fill="#1d1d1f" font-family="Inter, sans-serif" font-size="12">estudiantes, maestros,</text>
+          <text x="424" y="112" fill="#1d1d1f" font-family="Inter, sans-serif" font-size="12">padres, encargados y</text>
+          <text x="424" y="130" fill="#1d1d1f" font-family="Inter, sans-serif" font-size="12">la comunidad en general.</text>
+        </svg>
+
+        <div class="sub-panel">
+          <strong>Vínculo con la Guía Integral de Apoyo (2024) y Estándar 4.2</strong>
+          <p class="tile-desc">
+            El Programa de Servicios Bibliotecarios y de Información promueve ambientes enriquecidos de aprendizaje a partir de las necesidades curriculares para desarrollar la destreza de aprender a aprender, mientras el Director gestiona acceso equitativo a tecnología educativa (Estándar 4.2.4) y alianzas de apoyo.
+          </p>
+        </div>
+      </article>
+
+      <!-- Módulo 5: Alianzas Multisectoriales (Span 5) -->
+      <article class="tile span-5" data-tags="alianzas" id="modulo-alianzas">
+        <div class="tile-header">
+          <div>
+            <span class="tile-eyebrow">04 · Corresponsabilidad multisectorial</span>
+            <h2 class="tile-title">Alianzas multisectoriales</h2>
+          </div>
+          <span class="chip">Art. 11.03 y 11.04</span>
+        </div>
+        <p class="tile-desc">
+          La Ley 85-2018 (según enmendada) y el Plan Estratégico 2026–2030 institucionalizan cuatro vías para sumar aliados sin costo al presupuesto escolar.
+        </p>
+
+        <div class="segmented" role="tablist" aria-label="Programas de alianzas">
+          <button type="button" class="seg-btn active" role="tab" aria-selected="true" onclick="selectAlliance('integracion', this)">Integración</button>
+          <button type="button" class="seg-btn" role="tab" aria-selected="false" onclick="selectAlliance('corporativa', this)">Corporativas</button>
+          <button type="button" class="seg-btn" role="tab" aria-selected="false" onclick="selectAlliance('tercer', this)">Tercer Sector</button>
+          <button type="button" class="seg-btn" role="tab" aria-selected="false" onclick="selectAlliance('municipios', this)">Municipios</button>
+        </div>
+
+        <div id="alliance-detail" class="sub-panel" aria-live="polite"></div>
+      </article>
+
+      <!-- Módulo 6: Salud Preventiva, Nutrición y Bienestar Socioemocional (Span 7) -->
+      <article class="tile span-7" data-tags="salud" id="modulo-salud">
+        <div class="tile-header">
+          <div>
+            <span class="tile-eyebrow">05 · Modelo biopsicosocial escolar</span>
+            <h2 class="tile-title">Salud preventiva, nutrición y bienestar socioemocional</h2>
+          </div>
+          <span class="chip positive">Plan 2026–2030</span>
+        </div>
+        <p class="tile-desc">
+          El plantel coordina con el Departamento de Salud, la ORE y entidades aliadas campañas de vacunación (con consentimiento familiar), manejo de condiciones crónicas (asma y diabetes, Art. 9.08), nutrición y prevención de acoso escolar (bullying) y suicidio (Art. 9.10 y 11.03).
+        </p>
+
+        <div class="chart-wrap" style="min-height: 260px;">
+          <canvas id="healthChart" aria-label="Indicadores mínimos de la Meta Estratégica 2 del Plan Estratégico 2026–2030"></canvas>
+        </div>
+
+        <div class="sub-grid-3">
+          <div class="sub-panel">
+            <strong>Vacunación y salud física</strong>
+            <span class="practice-meta">Art. 9.08 y 9.10: Coordinación con Depto. de Salud, Enfermería Escolar en la ORE y campañas preventivas con consentimiento de padres.</span>
+          </div>
+          <div class="sub-panel">
+            <strong>Prevención de bullying</strong>
+            <span class="practice-meta">Art. 2.13, 9.07 y 11.03(f): Campañas junto al Consejero y Trabajador Social Escolar; consejería a víctimas y ofensores; informe anual.</span>
+          </div>
+          <div class="sub-panel">
+            <strong>Nutrición y comedor</strong>
+            <span class="practice-meta">Meta Estratégica 2: Incrementar en +1.5 % la participación estudiantil en desayuno y almuerzo, y ejecutar 2 campañas anuales de nutrición.</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Módulo 7: Gobernanza, Consejo Escolar y Flujo Operacional Paso a Paso (Span 12) -->
+      <article class="tile span-12" data-tags="marco espacios alianzas" id="modulo-flujo">
+        <div class="tile-header">
+          <div>
+            <span class="tile-eyebrow">06 · Protocolo institucional y seguimiento</span>
+            <h2 class="tile-title">Gobernanza, Consejo Escolar y flujo operacional paso a paso</h2>
+          </div>
+          <span class="chip">PCS · ORE · DEE</span>
+        </div>
+        <p class="tile-desc">
+          Seleccione cualquier fase para consultar el protocolo operativo de atención a solicitudes comunitarias y utilice la lista de cotejo para verificar la preparación de su escuela.
+        </p>
+
+        <div class="stepper-track" role="tablist" aria-label="Pasos del flujo operacional">
+          <button type="button" class="step-btn active" role="tab" aria-selected="true" onclick="selectStep(0, this)">
+            <span class="step-num">01</span>
+            <span class="step-label">Recepción y estudio de necesidad</span>
+          </button>
+          <button type="button" class="step-btn" role="tab" aria-selected="false" onclick="selectStep(1, this)">
+            <span class="step-num">02</span>
+            <span class="step-label">Validación lectiva y seguridad</span>
+          </button>
+          <button type="button" class="step-btn" role="tab" aria-selected="false" onclick="selectStep(2, this)">
+            <span class="step-num">03</span>
+            <span class="step-label">Consulta al Consejo Escolar</span>
+          </button>
+          <button type="button" class="step-btn" role="tab" aria-selected="false" onclick="selectStep(3, this)">
+            <span class="step-num">04</span>
+            <span class="step-label">Acuerdo y plan de voluntariado</span>
+          </button>
+          <button type="button" class="step-btn" role="tab" aria-selected="false" onclick="selectStep(4, this)">
+            <span class="step-num">05</span>
+            <span class="step-label">Ejecución en horario coordinado</span>
+          </button>
+          <button type="button" class="step-btn" role="tab" aria-selected="false" onclick="selectStep(5, this)">
+            <span class="step-num">06</span>
+            <span class="step-label">Registro en PCS y evaluación ORE</span>
+          </button>
+        </div>
+
+        <div class="sub-grid-2">
+          <div id="step-detail" class="sub-panel" aria-live="polite"></div>
+
+          <div class="sub-panel">
+            <div class="tile-header">
+              <div>
+                <strong>Lista de cotejo de preparación del Director</strong>
+                <span class="practice-meta" id="checklist-summary">0 de 6 verificaciones completadas</span>
+              </div>
+              <div style="display:flex; gap: var(--space-xs); flex-wrap: wrap;">
+                <button type="button" class="btn-secondary" style="min-height: 36px; padding: var(--space-xs) var(--space-md);" onclick="exportChecklist()">Exportar CSV</button>
+                <button type="button" class="btn-secondary" id="reset-chk-btn" style="min-height: 36px; padding: var(--space-xs) var(--space-md);" onclick="resetChecklist(this)">Reiniciar</button>
+              </div>
+            </div>
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-fill" id="checklist-progress" style="width: 0%;"></div>
+            </div>
+            <div id="checklist-container" class="checklist-wrap"></div>
+            <span id="export-status" class="inline-status" aria-live="polite"></span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Módulo 8: Matriz de Responsabilidades y Voluntariado (Span 7) -->
+      <article class="tile span-7" data-tags="marco alianzas" id="modulo-matriz">
+        <div class="tile-header">
+          <div>
+            <span class="tile-eyebrow">Distribución de roles y voluntariado</span>
+            <h2 class="tile-title">Matriz de responsabilidades</h2>
+          </div>
+          <span class="chip">Gobernanza compartida</span>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="matrix-role">Filtrar por actor institucional</label>
+            <select id="matrix-role" class="control-select" onchange="renderMatrix()">
+              <option value="all">Todos los actores</option>
+              <option value="director">Director de Escuela</option>
+              <option value="consejo">Consejo Escolar y Facultad</option>
+              <option value="personal">Maestros, Bibliotecario y Equipo Biopsicosocial</option>
+              <option value="ore">ORE y Nivel Central</option>
+              <option value="comunidad">Padres Voluntarios, Tercer Sector y Empresas</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="matrix-search">Buscar función o base normativa</label>
+            <input type="search" id="matrix-search" class="control-input" placeholder="Ej. biblioteca, voluntariado, PCS, salud" oninput="renderMatrix()">
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Actor</th>
+                <th>Responsabilidad operacional</th>
+                <th>Fundamento</th>
+              </tr>
+            </thead>
+            <tbody id="matrix-tbody"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- Módulo 9: Referencias Institucionales en APA 7 (Span 5) -->
+      <article class="tile span-5" data-tags="marco salud espacios alianzas" id="modulo-referencias">
+        <div class="tile-header">
+          <div>
+            <span class="tile-eyebrow">Rigor documental</span>
+            <h2 class="tile-title">Referencias en formato APA 7</h2>
+          </div>
+          <span class="chip">Fuentes oficiales</span>
+        </div>
+        <p class="tile-desc">
+          Sustento normativo y programático de cada módulo presentado en este portal:
+        </p>
+        <ul class="apa-list">
+          <li class="apa-item">
+            Departamento de Educación de Puerto Rico. (2020). <em>Reglamento de las Escuelas Primarias y Secundarias del Departamento de Educación de Puerto Rico</em> (Reglamento Núm. 9193). Gobierno de Puerto Rico.
+          </li>
+          <li class="apa-item">
+            Departamento de Educación de Puerto Rico. (2022). <em>Estándares profesionales del director de escuela, 2022</em> (Marco OCA3E). Subsecretaría para Asuntos Académicos y Programáticos.
+          </li>
+          <li class="apa-item">
+            Departamento de Educación de Puerto Rico. (2023). <em>Descripción del puesto (DE-16): Director de Escuela y Facilitador Docente</em>. Área de Recursos Humanos.
+          </li>
+          <li class="apa-item">
+            Departamento de Educación de Puerto Rico. (2024). <em>Guía integral para el apoyo académico y administrativo</em>. Oficina Regional Educativa y Portal de Cumplimiento y Seguimiento.
+          </li>
+          <li class="apa-item">
+            Departamento de Educación de Puerto Rico. (2026). <em>Plan estratégico 2026–2030</em>. Gobierno de Puerto Rico.
+          </li>
+          <li class="apa-item">
+            Ley Orgánica para el Departamento de Educación de Puerto Rico, Ley Núm. 149 de 15 de julio de 1999, Art. 2.13.
+          </li>
+          <li class="apa-item">
+            Ley de Reforma Educativa de Puerto Rico, Ley Núm. 85 de 29 de marzo de 2018, según enmendada (rev. 5 de septiembre de 2024). Oficina de Gerencia y Presupuesto del Gobierno de Puerto Rico.
+          </li>
+        </ul>
+      </article>
+
+    </section>
+
+    <footer class="page-footer">
+      <p style="margin: 0;">
+        Portal interactivo sobre la Función #17 del Director de Escuela (DE-16) · Creado por el Dr. Enrique Cordero Soto, en colaboración con IA · Basado en documentos oficiales del Departamento de Educación de Puerto Rico y la Ley 85-2018.
+      </p>
+    </footer>
+  </main>
+
+  <api-shim></api-shim>
+  <script>
+    const MARCO_DATA = {
+      de16: {
+        title: `Formulario DE-16 — Tarea #17 y Artículo 2.13 (Ley 149)`,
+        summary: `El formulario oficial DE-16 define las funciones esenciales del Director de Escuela ante el Secretario de Educación y el Consejo Escolar como representante del plantel ante la comunidad.`,
+        items: [
+          {
+            code: `Tarea #17`,
+            text: `Facilitar a la comunidad los servicios y recursos con que cuenta la escuela de acuerdo a las leyes y reglamentos vigentes.`,
+            meta: `Eje central del portal · Vinculada a la representación comunitaria del plantel`
+          },
+          {
+            code: `Tarea #11`,
+            text: `Estudiar, conocer y determinar las necesidades, intereses y fortalezas de la comunidad a la que sirve la escuela para adaptar el currículo en diálogo con la Facultad y el Consejo Escolar.`,
+            meta: `Diagnóstico sociocultural y pertinencia comunitaria`
+          },
+          {
+            code: `Tarea #15 y #16`,
+            text: `Organizar, divulgar y ofrecer servicios educativos para la comunidad; mantener al día estadísticas escolares y divulgar ofrecimientos, logros y necesidades.`,
+            meta: `Transparencia y rendición de cuentas comunitaria`
+          },
+          {
+            code: `DE-16 FD #14`,
+            text: `El Facilitador Docente apoya al maestro en el manejo de estudiantes con necesidades educativas especiales y en integrar a las familias como aliadas del proceso educativo.`,
+            meta: `Coordinación entre ORE, Director de Escuela y salón de clase`
+          }
+        ]
+      },
+      ley85: {
+        title: `Ley Núm. 85-2018 — Ley de Reforma Educativa de Puerto Rico`,
+        summary: `Establece la descentralización hacia el estudiante y el salón de clase, delega facultades gerenciales al Director de Escuela y abre el plantel a alianzas multisectoriales.`,
+        items: [
+          {
+            code: `Art. 2.09(d)`,
+            text: `El Director de Escuela dirige la escuela para convertirla en un centro de alto rendimiento y promueve expectativas de éxito en toda la comunidad escolar.`,
+            meta: `Liderazgo transformador en el plantel`
+          },
+          {
+            code: `Art. 8.01 y p. 17`,
+            text: `Consolida en el Departamento la planificación de planteles con guías uniformes de manejo, seguridad y salubridad, convirtiéndolos en centros vibrantes de desarrollo comunitario.`,
+            meta: `Uso ordenado de canchas, salones y facilidades escolares`
+          },
+          {
+            code: `Art. 2.04 (inc. 55)`,
+            text: `Garantiza bibliotecas escolares administradas por personal docente certificado, con material impreso e Internet de banda ancha en horario accesible a estudiantes, maestros, padres y comunidad.`,
+            meta: `Aplica tanto a escuelas regulares como a Escuelas Públicas Alianza`
+          },
+          {
+            code: `Art. 11.03 y 11.04`,
+            text: `Crea el Programa de Integración Comunitaria (Tercer Sector) y el Programa de Alianzas Corporativas (Ley 98-2020) para ofrecer servicios gratuitos en horario regular y extendido.`,
+            meta: `Prevención de deserción, arte, deporte, tutorías y salud`
+          }
+        ]
+      },
+      est2: {
+        title: `Estándar 2 OCA3E — El Director de Escuela como Líder Comunitario`,
+        summary: `Facilita la participación de las familias y la comunidad en los procesos educativos mediante alianzas y relaciones de confianza en beneficio del colectivo.`,
+        items: [
+          {
+            code: `2.1.1 – 2.1.3`,
+            text: `Comunicación efectiva: mantiene informada a la comunidad sobre iniciativas escolares, brinda oportunidades de voluntariado para padres o tutores y coordina reuniones periódicas.`,
+            meta: `Desempeño 1: Comunicación Efectiva`
+          },
+          {
+            code: `2.2.1 – 2.2.2`,
+            text: `Recopila información del entorno comunitario y realiza estudios de necesidades sociodemográficas con las familias para orientar los servicios escolares.`,
+            meta: `Desempeño 2: Cultura y Clima Escolar`
+          },
+          {
+            code: `2.2.5 y 2.2.7`,
+            text: `Identifica fortalezas profesionales o técnicas de la comunidad para el voluntariado en áreas de mayor necesidad y promueve alianzas públicas y privadas (charlas, demostraciones, visitas).`,
+            meta: `Voluntariado estratégico y alianzas externas`
+          },
+          {
+            code: `2.2.8 – 2.2.10`,
+            text: `Vincula el día a día escolar con su comunidad, incorpora a madres y padres en la gobernanza y promueve el reconocimiento de la escuela como centro integral de su comunidad.`,
+            meta: `Resultado esperado: participación activa en el mejoramiento continuo`
+          }
+        ]
+      },
+      est3: {
+        title: `Estándar 3 OCA3E — El Director de Escuela como Líder Administrativo`,
+        summary: `Administra datos, infraestructura, recursos fiscales y normativas vigentes para que los procesos funcionen en virtud del aprendizaje y bienestar integral.`,
+        items: [
+          {
+            code: `3.1.4 – 3.1.5`,
+            text: `Utiliza datos del entorno familiar, sociocultural y lingüístico y recopila aportaciones de estudiantes, familias y comunidad sobre el funcionamiento escolar.`,
+            meta: `Desempeño 1: Uso de los Datos`
+          },
+          {
+            code: `3.2.9`,
+            text: `Garantiza el buen uso del tiempo lectivo de los estudiantes, evitando interrupciones por actividades externas no alineadas al currículo.`,
+            meta: `Regla de oro operativa para apertura comunitaria`
+          },
+          {
+            code: `3.2.10 – 3.2.11`,
+            text: `Establece estrategias para usar eficazmente la infraestructura, equipos y materiales, y define procedimientos internos para transiciones ordenadas en el plantel.`,
+            meta: `Gestión ordenada de espacios compartidos y comedores`
+          },
+          {
+            code: `3.2.12, 3.2.15, 3.2.17`,
+            text: `Divulga leyes y reglamentos vigentes, administra recursos físicos y fiscales con el Consejo Escolar mediante contabilidad confiable y fomenta una cultura de cumplimiento normativo.`,
+            meta: `Resultado esperado: organización administrativa ágil y transparente`
+          }
+        ]
+      }
+    };
+
+    const SPACE_DATA = {
+      canchas: {
+        title: `Canchas bajo techo y facilidades deportivas`,
+        badge: `Horario extendido prioritario`,
+        points: [
+          `La Ley 85-2018 (p. 17) ejemplifica el uso de las canchas escolares después del horario lectivo por ligas deportivas comunitarias para alejar a niños y adolescentes del riesgo de deserción.`,
+          `El Director coordina calendario de apertura y cierre, supervisión responsable y condiciones de limpieza para preservar la planta física para las clases de Educación Física.`
+        ]
+      },
+      multiusos: {
+        title: `Salones multiusos, arte, música y capacitación`,
+        badge: `Compatible con la misión educativa`,
+        points: [
+          `Pueden habilitarse para escuelas de arte y música, talleres para familias, tutorías de horario extendido y reuniones de organizaciones comunitarias o del Tercer Sector.`,
+          `Los arrendamientos o autorizaciones a entidades externas deben ser compatibles con la actividad educativa y la política pública vigente (Ley 85-2018, p. 33).`
+        ]
+      },
+      comedores: {
+        title: `Comedores escolares y servicios alimentarios`,
+        badge: `Bienestar y nutrición`,
+        points: [
+          `El sistema escolar atiende las necesidades de comedor y transportación (Ley 85-2018, p. 38), garantizando transiciones ordenadas hacia y desde el comedor (Estándar 3.2.11).`,
+          `El Plan Estratégico 2026–2030 fija como meta incrementar en 1.5 % la participación estudiantil en los servicios de desayuno y almuerzo y realizar al menos 2 campañas anuales de nutrición.`
+        ]
+      },
+      seguridad: {
+        title: `Seguridad, salubridad y protección del tiempo lectivo`,
+        badge: `Guías uniformes Art. 8.01`,
+        points: [
+          `Todo uso comunitario se rige por las guías uniformes de manejo, seguridad y salubridad de planteles (Ley 85-2018, p. 17) y la Guía Integral de Apoyo (2024) sobre ambientes seguros y saludables.`,
+          `El Director elabora el plan de seguridad interna en coordinación con la Policía de Puerto Rico, Policías Municipales o seguridad autorizada (Art. 2.13(q)(4)), sin afectar jamás el tiempo lectivo (Estándar 3.2.9).`
+        ]
+      }
+    };
+
+    const ALLIANCE_DATA = {
+      integracion: {
+        title: `Programa de Integración Comunitaria (Art. 11.03, Ley 85-2018)`,
+        body: `Adscrito a la Oficina del Secretario del DEPR. Fomenta el trabajo voluntario, los acuerdos colaborativos y la apertura del plantel a entidades sin fines de lucro en horario regular y extendido para tutorías, deportes, arte, prevención de deserción y campañas contra bullying, suicidio y trata humana.`
+      },
+      corporativa: {
+        title: `Programa de Alianzas Corporativas (Art. 11.04 / Ley 98-2020)`,
+        body: `Permite a corporaciones o sociedades desarrollar proyectos de responsabilidad social empresarial con las escuelas públicas, brindando servicios gratuitos en tareas docentes y no docentes según sus destrezas, conocimientos y capacidades técnicas.`
+      },
+      tercer: {
+        title: `Tercer Sector, base de fe y entidades sin fines de lucro`,
+        body: `La Ley 85-2018 (inciso u, p. 39) instruye facilitar el acceso y uso de planteles a entidades del Tercer Sector y sin fines de lucro para ofrecer servicios a estudiantes y padres, integrando la escuela como un ecosistema saludable y sustentable.`
+      },
+      municipios: {
+        title: `Municipios, consorcios, universidades y agencias`,
+        body: `Incluye consorcios municipales, instituciones de educación superior y agencias estatales (Salud, Familia, Seguridad) para charlas, demostraciones, visitas educativas (Estándar 2.2.7), internados, capacitación docente y apoyo interagencial.`
+      }
+    };
+
+    const STEPS_DATA = [
+      {
+        num: `Fase 01`,
+        title: `Recepción de solicitud y estudio de necesidad`,
+        desc: `La comunidad, entidad del Tercer Sector, municipio o grupo de padres somete por escrito el propósito, público impactado, fechas y espacio requerido. El Director contrasta la petición con el estudio de necesidades sociodemográficas (Estándar 2.2.2) y el Diseño de Excelencia Escolar (DEE).`,
+        actor: `Director de Escuela y entidad solicitante`,
+        basis: `DE-16 Tareas #11 y #17 · Estándar 2.2.2`
+      },
+      {
+        num: `Fase 02`,
+        title: `Validación de tiempo lectivo, seguridad y salubridad`,
+        desc: `Se verifica que la actividad no interrumpa el tiempo lectivo de los estudiantes (Estándar 3.2.9) ni las transiciones de comedor o recreo (Estándar 3.2.11). Se evalúan las condiciones de infraestructura, accesos, plan de seguridad interna (Art. 2.13(q)(4)) y normas de salubridad (Art. 8.01).`,
+        actor: `Director de Escuela y personal de seguridad/planta`,
+        basis: `Estándar 3.2.9 – 3.2.11 · Ley 85-2018 Art. 8.01`
+      },
+      {
+        num: `Fase 03`,
+        title: `Consulta y consenso con el Consejo Escolar`,
+        desc: `El Director presenta la iniciativa ante el Consejo Escolar —y la Facultad cuando incide en el currículo o Plan de Trabajo Escolar— para validar su pertinencia comunitaria, el uso de los recursos físicos y la transparencia contable o administrativa (Estándar 3.2.15).`,
+        actor: `Consejo Escolar y Facultad`,
+        basis: `Ley 149 Art. 2.13 · Estándar 2.2.4 y 3.2.15`
+      },
+      {
+        num: `Fase 04`,
+        title: `Formalización de acuerdo colaborativo o voluntariado`,
+        desc: `Se documenta la colaboración bajo el Programa de Integración Comunitaria (Art. 11.03), el Programa de Alianzas Corporativas (Art. 11.04) o el registro de padres voluntarios según sus fortalezas técnicas o profesionales (Estándar 2.1.2 y 2.2.5), asegurando gratuidad y cumplimiento legal.`,
+        actor: `Director de Escuela, ORE y Nivel Central (según alcance)`,
+        basis: `Ley 85-2018 Art. 11.03–11.04 · Estándar 2.2.5`
+      },
+      {
+        num: `Fase 05`,
+        title: `Ejecución supervisada y comunicación comunitaria`,
+        desc: `Se divulga el servicio o horario extendido a familias y comunidad (Estándar 2.1.1; DE-16 Tarea #15). Durante la ejecución (cancha, biblioteca o clínica de salud con consentimiento), se garantizan protocolos de emergencia médica (Art. 9.08) y entrega ordenada del plantel.`,
+        actor: `Director, Maestro Bibliotecario o Equipo Biopsicosocial`,
+        basis: `Estándar 2.1.1 · Art. 2.04(55) · Art. 9.08 y 9.10`
+      },
+      {
+        num: `Fase 06`,
+        title: `Documentación en PCS y seguimiento con la ORE`,
+        desc: `Las intervenciones, visitas de apoyo y resultados comunitarios se documentan en las hojas de control correspondientes y en el Portal de Cumplimiento y Seguimiento (PCS), manteniendo coordinación con el Superintendente Regional y la ORE para mejora continua.`,
+        actor: `Director de Escuela, Facilitador Docente y ORE`,
+        basis: `Guía Integral 2024 · DE-16 FD #24 y #27`
+      }
+    ];
+
+    const CHECKLIST_ITEMS = [
+      {
+        id: `chk_1`,
+        title: `Estudio de necesidades comunitarias actualizado con las familias`,
+        ref: `Estándar 2.2.2 · DE-16 Tarea #11`
+      },
+      {
+        id: `chk_2`,
+        title: `Calendario de uso comunitario separado del horario lectivo`,
+        ref: `Estándar 3.2.9 · Estándar 3.2.10`
+      },
+      {
+        id: `chk_3`,
+        title: `Biblioteca con docente certificado, material impreso y banda ancha`,
+        ref: `Ley 85-2018 Art. 2.04 (inc. 55) · Guía Integral 2024`
+      },
+      {
+        id: `chk_4`,
+        title: `Plan de seguridad interna y guías de salubridad verificadas`,
+        ref: `Ley 85-2018 Art. 2.13(q)(4) y Art. 8.01`
+      },
+      {
+        id: `chk_5`,
+        title: `Directorio de padres voluntarios y alianzas del Tercer Sector`,
+        ref: `Estándar 2.1.2, 2.2.5 · Art. 11.03 y 11.04`
+      },
+      {
+        id: `chk_6`,
+        title: `Protocolos de salud (consentimiento, asma/diabetes y antibullying) activos`,
+        ref: `Ley 85-2018 Art. 9.08, 9.10 · Plan Estratégico 2026–2030`
+      }
+    ];
+
+    const MATRIX_ROWS = [
+      {
+        roleKey: `director`,
+        actor: `Director de Escuela`,
+        duty: `Evalúa solicitudes, protege el tiempo lectivo, coordina seguridad y salubridad, formaliza alianzas, divulga servicios y rinde cuentas ante el Consejo Escolar y la ORE.`,
+        basis: `DE-16 Tarea #17 · Ley 85-2018 Art. 2.09(d) · Estándares 2 y 3`
+      },
+      {
+        roleKey: `consejo`,
+        actor: `Consejo Escolar y Facultad`,
+        duty: `Aprueba la Organización Escolar y el Plan de Trabajo (DEE), asesora sobre el uso de fondos y espacios físicos, y canaliza iniciativas comunitarias.`,
+        basis: `DE-16 Tareas #3, #7, #10, #14 · Estándar 2.2.4 y 3.2.15`
+      },
+      {
+        roleKey: `personal`,
+        actor: `Maestro Bibliotecario`,
+        duty: `Administra la Biblioteca Escolar Comunitaria con certificación vigente, organiza recursos impresos y banda ancha, y atiende a estudiantes, docentes, padres y comunidad.`,
+        basis: `Ley 85-2018 Inciso 55 · Guía Integral 2024`
+      },
+      {
+        roleKey: `personal`,
+        actor: `Maestros y Equipo Biopsicosocial`,
+        duty: `Consejero Escolar, Trabajador Social y Enfermería Escolar ejecutan campañas contra bullying, suicidio y trata humana; conectan hogar, escuela y comunidad.`,
+        basis: `Ley 85-2018 Art. 2.25, 9.08, 9.10 · Estándar Maestro 7.2`
+      },
+      {
+        roleKey: `ore`,
+        actor: `ORE y Facilitador Docente`,
+        duty: `Brindan asistencia técnica, integran familias como aliadas, monitorean programas de salud regional y documentan intervenciones en el Portal de Cumplimiento y Seguimiento (PCS).`,
+        basis: `Guía Integral 2024 · DE-16 FD #14 y #27`
+      },
+      {
+        roleKey: `comunidad`,
+        actor: `Padres Voluntarios, Tercer Sector y Empresas`,
+        duty: `Aportan destrezas profesionales o técnicas sin costo en actividades extracurriculares, mentorías, deportes, arte o apoyo no docente bajo acuerdos formales.`,
+        basis: `Estándar 2.1.2 y 2.2.5 · Ley 85-2018 Art. 11.03 y 11.04`
+      }
+    ];
+
+    let appState = {
+      checklist: {},
+      activeMarco: `de16`,
+      activeStep: 0
+    };
+    let healthChartInstance = null;
+
+    function scrollToSection(id) {
+      const target = document.getElementById(id);
+      if (target) {
+        target.scrollIntoView({ behavior: `smooth`, block: `start` });
+      }
+    }
+
+    function applyDimensionFilter(tag, btnEl) {
+      const chips = document.querySelectorAll(`.filter-chip`);
+      chips.forEach((chip) => chip.classList.remove(`active`));
+      if (btnEl) btnEl.classList.add(`active`);
+
+      const tiles = document.querySelectorAll(`.bento-grid > .tile`);
+      tiles.forEach((tile) => {
+        const tagsAttr = tile.getAttribute(`data-tags`) || ``;
+        const matches = tag === `all` || tagsAttr.split(` `).includes(tag);
+        tile.classList.toggle(`is-dimmed`, !matches);
+        tile.classList.toggle(`is-highlighted`, tag !== `all` && matches);
+      });
+    }
+
+    function selectMarcoTab(key, btnEl) {
+      const data = MARCO_DATA[key];
+      const container = document.getElementById(`marco-content`);
+      if (!data || !container) return;
+
+      const tablist = btnEl ? btnEl.closest(`.segmented`) : null;
+      if (tablist) {
+        tablist.querySelectorAll(`.seg-btn`).forEach((b) => {
+          b.classList.remove(`active`);
+          b.setAttribute(`aria-selected`, `false`);
+        });
+      }
+      if (btnEl) {
+        btnEl.classList.add(`active`);
+        btnEl.setAttribute(`aria-selected`, `true`);
+      }
+
+      const itemsHtml = data.items.map((item) => `
+        <li class="practice-item">
+          <span class="practice-code">${item.code}</span>
+          <p class="practice-text">
+            ${item.text}
+            <span class="practice-meta">${item.meta}</span>
+          </p>
+        </li>
+      `).join(``);
+
+      container.innerHTML = `
+        <div>
+          <strong>${data.title}</strong>
+          <p class="practice-meta" style="margin-top: var(--space-xs);">${data.summary}</p>
+        </div>
+        <ul class="practice-list">${itemsHtml}</ul>
+      `;
+
+      appState.activeMarco = key;
+      persistAppState();
+    }
+
+    function evaluateRequest() {
+      const recursoEl = document.getElementById(`sim-recurso`);
+      const horarioEl = document.getElementById(`sim-horario`);
+      const entidadEl = document.getElementById(`sim-entidad`);
+      const segEl = document.getElementById(`chk-seguridad`);
+      const conEl = document.getElementById(`chk-consejo`);
+      const outEl = document.getElementById(`verdict-output`);
+
+      if (!recursoEl || !horarioEl || !entidadEl || !segEl || !conEl || !outEl) return;
+
+      const recurso = recursoEl.value;
+      const horario = horarioEl.value;
+      const entidad = entidadEl.value;
+      const hasSeg = segEl.checked;
+      const hasConsejo = conEl.checked;
+
+      let statusLabel = `Viable para autorización`;
+      let statusClass = `positive`;
+      let guidance = ``;
+      let route = ``;
+
+      if (horario === `lectivo_externo`) {
+        statusLabel = `No procede en horario lectivo`;
+        statusClass = `warning`;
+        guidance = `El Estándar 3.2.9 obliga al Director a garantizar el buen uso del tiempo lectivo. Reprograme la actividad al horario extendido o intégrela formalmente al currículo mediante el Consejo Escolar y la ORE.`;
+      } else if (!hasSeg || !hasConsejo) {
+        statusLabel = `Condicionado a requisitos previos`;
+        statusClass = `warning`;
+        const missing = [];
+        if (!hasSeg) missing.push(`plan de seguridad interna y salubridad (Ley 85-2018 Art. 8.01 y Art. 2.13(q)(4))`);
+        if (!hasConsejo) missing.push(`consulta y aval del Consejo Escolar (DE-16 y Estándar 3.2.15)`);
+        guidance = `Antes de autorizar el espacio, complete: ${missing.join(` y `)}.`;
+      } else {
+        if (recurso === `cancha`) {
+          guidance = `Uso deportivo o comunitario viable bajo guías uniformes de manejo y seguridad. Prioriza ligas juveniles y recreación para prevenir deserción escolar (Ley 85-2018, p. 17).`;
+        } else if (recurso === `biblioteca`) {
+          guidance = `Acceso garantizado conforme al Inciso 55 de la Ley 85-2018: requiere supervisión de maestro bibliotecario certificado, uso de acervo impreso e Internet de banda ancha.`;
+        } else if (recurso === `multiusos`) {
+          guidance = `Facilidad apta para talleres comunitarios, arte, música o capacitación familiar (DE-16 Tarea #15), protegiendo equipo escolar y transiciones ordenadas (Estándar 3.2.10–3.2.11).`;
+        } else {
+          guidance = `Actividad preventiva viable en coordinación con Enfermería Escolar de la ORE y el Departamento de Salud (Art. 9.08 y 9.10); requiere consentimiento escrito de madres, padres o encargados.`;
+        }
+      }
+
+      if (entidad === `tercer_sector`) {
+        route = `Ruta: Acuerdo colaborativo bajo el Programa de Integración Comunitaria (Art. 11.03) + registro en PCS.`;
+      } else if (entidad === `corporacion`) {
+        route = `Ruta: Convenio gratuito de responsabilidad social bajo el Programa de Alianzas Corporativas (Art. 11.04 / Ley 98-2020) + registro en PCS.`;
+      } else if (entidad === `municipio`) {
+        route = `Ruta: Coordinación interagencial o municipal de seguridad/salud (Art. 2.13 y 9.10) + notificación al Superintendente Regional.`;
+      } else {
+        route = `Ruta: Registro de voluntariado comunitario según fortalezas técnicas/profesionales (Estándares 2.1.2 y 2.2.5) + hoja de control escolar.`;
+      }
+
+      outEl.innerHTML = `
+        <div class="verdict-status">
+          <h3 class="verdict-title">Dictamen normativo</h3>
+          <span class="chip ${statusClass}">${statusLabel}</span>
+        </div>
+        <p class="practice-text">${guidance}</p>
+        <span class="practice-meta">${route}</span>
+      `;
+    }
+
+    function selectSpace(key, btnEl) {
+      const data = SPACE_DATA[key];
+      const detail = document.getElementById(`space-detail`);
+      if (!data || !detail) return;
+
+      const parent = btnEl ? btnEl.parentElement : null;
+      if (parent) {
+        parent.querySelectorAll(`.option-card`).forEach((c) => c.classList.remove(`active`));
+      }
+      if (btnEl) btnEl.classList.add(`active`);
+
+      const listHtml = data.points.map((pt) => `
+        <li class="practice-item">
+          <span class="practice-code">Norma</span>
+          <p class="practice-text">${pt}</p>
+        </li>
+      `).join(``);
+
+      detail.innerHTML = `
+        <div class="tile-header">
+          <strong>${data.title}</strong>
+          <span class="chip">${data.badge}</span>
+        </div>
+        <ul class="practice-list">${listHtml}</ul>
+      `;
+    }
+
+    function selectAlliance(key, btnEl) {
+      const data = ALLIANCE_DATA[key];
+      const detail = document.getElementById(`alliance-detail`);
+      if (!data || !detail) return;
+
+      const tablist = btnEl ? btnEl.closest(`.segmented`) : null;
+      if (tablist) {
+        tablist.querySelectorAll(`.seg-btn`).forEach((b) => {
+          b.classList.remove(`active`);
+          b.setAttribute(`aria-selected`, `false`);
+        });
+      }
+      if (btnEl) {
+        btnEl.classList.add(`active`);
+        btnEl.setAttribute(`aria-selected`, `true`);
+      }
+
+      detail.innerHTML = `
+        <strong>${data.title}</strong>
+        <p class="practice-text">${data.body}</p>
+        <span class="practice-meta">Estándar 2.2.7: Promueve alianzas con entidades públicas y privadas mediante charlas, demostraciones y visitas educativas.</span>
+      `;
+    }
+
+    function selectStep(index, btnEl) {
+      const step = STEPS_DATA[index];
+      const detail = document.getElementById(`step-detail`);
+      if (!step || !detail) return;
+
+      const track = document.querySelector(`.stepper-track`);
+      if (track) {
+        track.querySelectorAll(`.step-btn`).forEach((b) => {
+          b.classList.remove(`active`);
+          b.setAttribute(`aria-selected`, `false`);
+        });
+      }
+      if (btnEl) {
+        btnEl.classList.add(`active`);
+        btnEl.setAttribute(`aria-selected`, `true`);
+      }
+
+      detail.innerHTML = `
+        <div class="tile-header">
+          <div>
+            <span class="tile-eyebrow">${step.num}</span>
+            <strong style="font-size: 1.0625rem;">${step.title}</strong>
+          </div>
+          <span class="chip">${step.basis}</span>
+        </div>
+        <p class="practice-text">${step.desc}</p>
+        <span class="practice-meta">Responsable principal: ${step.actor}</span>
+      `;
+
+      appState.activeStep = index;
+      persistAppState();
+    }
+
+    function renderChecklist() {
+      const container = document.getElementById(`checklist-container`);
+      const summary = document.getElementById(`checklist-summary`);
+      const progress = document.getElementById(`checklist-progress`);
+      if (!container || !summary || !progress) return;
+
+      let completed = 0;
+      container.innerHTML = CHECKLIST_ITEMS.map((item) => {
+        const isChecked = Boolean(appState.checklist[item.id]);
+        if (isChecked) completed += 1;
+        return `
+          <label class="checklist-item ${isChecked ? `done` : ``}">
+            <input type="checkbox" ${isChecked ? `checked` : ``} onchange="toggleChecklistItem('${item.id}', this.checked)">
+            <span>
+              <span class="chk-title">${item.title}</span>
+              <span class="chk-ref">${item.ref}</span>
+            </span>
+          </label>
+        `;
+      }).join(``);
+
+      const pct = Math.round((completed / CHECKLIST_ITEMS.length) * 100);
+      summary.textContent = `${completed} de ${CHECKLIST_ITEMS.length} verificaciones completadas (${pct} %)`;
+      progress.style.width = `${pct}%`;
+    }
+
+    function toggleChecklistItem(id, checked) {
+      appState.checklist[id] = checked;
+      renderChecklist();
+      persistAppState();
+    }
+
+    function resetChecklist(btn) {
+      if (!btn) return;
+      if (btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.textContent = `Confirmar reinicio`;
+        return;
+      }
+      btn.dataset.armed = `false`;
+      btn.textContent = `Reiniciar`;
+      appState.checklist = {};
+      renderChecklist();
+      persistAppState();
+      const status = document.getElementById(`export-status`);
+      if (status) status.textContent = `Lista de cotejo reiniciada.`;
+    }
+
+    function exportChecklist() {
+      const lines = [`"Verificacion","Estado","Base normativa"`];
+      CHECKLIST_ITEMS.forEach((item) => {
+        const done = appState.checklist[item.id] ? `Completado` : `Pendiente`;
+        lines.push(`"${item.title}","${done}","${item.ref}"`);
+      });
+      const csvContent = lines.join(`\n`);
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === `function`) {
+        window.notebookAppApi.triggerFileDownload({
+          content: csvContent,
+          contentType: `text/csv`,
+          encoding: `UTF-8`,
+          filename: `cotejo_funcion17_director_pr.csv`
+        });
+      }
+      const status = document.getElementById(`export-status`);
+      if (status) status.textContent = `Archivo CSV generado con ${CHECKLIST_ITEMS.length} criterios de cumplimiento.`;
+    }
+
+    function renderMatrix() {
+      const roleEl = document.getElementById(`matrix-role`);
+      const searchEl = document.getElementById(`matrix-search`);
+      const tbody = document.getElementById(`matrix-tbody`);
+      if (!roleEl || !searchEl || !tbody) return;
+
+      const roleFilter = roleEl.value;
+      const query = searchEl.value.trim().toLowerCase();
+
+      const filtered = MATRIX_ROWS.filter((row) => {
+        const matchRole = roleFilter === `all` || row.roleKey === roleFilter;
+        const matchText = !query ||
+          row.actor.toLowerCase().includes(query) ||
+          row.duty.toLowerCase().includes(query) ||
+          row.basis.toLowerCase().includes(query);
+        return matchRole && matchText;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="3" style="color: var(--on-surface-variant);">
+              No se encontraron responsabilidades con ese criterio. Limpie el filtro de búsqueda para ver toda la matriz.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((row) => `
+        <tr>
+          <td><strong>${row.actor}</strong></td>
+          <td>${row.duty}</td>
+          <td style="color: var(--on-surface-variant);">${row.basis}</td>
+        </tr>
+      `).join(``);
+    }
+
+    function buildHealthChart() {
+      const canvas = document.getElementById(`healthChart`);
+      if (!canvas || typeof Chart === `undefined`) return;
+
+      const styles = getComputedStyle(document.documentElement);
+      const cBlue = styles.getPropertyValue(`--data-1`).trim();
+      const cOrange = styles.getPropertyValue(`--data-2`).trim();
+      const cGreen = styles.getPropertyValue(`--data-3`).trim();
+      const cPurple = styles.getPropertyValue(`--data-4`).trim();
+      const cInk = styles.getPropertyValue(`--on-surface`).trim();
+      const cGray = styles.getPropertyValue(`--on-surface-variant`).trim();
+      const cGrid = styles.getPropertyValue(`--outline-variant`).trim();
+
+      if (healthChartInstance) {
+        healthChartInstance.destroy();
+      }
+
+      healthChartInstance = new Chart(canvas, {
+        type: `bar`,
+        data: {
+          labels: [
+            `Escuelas con servicios biopsicosociales activos`,
+            `Participación estudiantil en salud y bienestar`,
+            `Acceso estudiantil a servicios de salud mental`,
+            `Satisfacción familiar/estudiantil socioemocional`,
+            `Docentes capacitados en primeros auxilios psicológicos`
+          ],
+          datasets: [{
+            label: `Meta mínima 2026–2030 (%)`,
+            data: [100, 85, 85, 85, 80],
+            backgroundColor: [cBlue, cGreen, cBlue, cPurple, cOrange],
+            borderRadius: 6,
+            barThickness: 22
+          }]
+        },
+        options: {
+          indexAxis: `y`,
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  return ` Meta mínima: ${ctx.parsed.x} %`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              min: 0,
+              max: 100,
+              grid: { color: cGrid },
+              ticks: {
+                color: cGray,
+                callback: function(value) { return `${value} %`; }
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: cInk, font: { size: 12, weight: `500` } }
+            }
+          }
+        }
+      });
+    }
+
+    async function persistAppState() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+        try {
+          await window.notebookAppApi.setAppState(appState);
+        } catch (err) {
+          /* ignore transient persistence error */
+        }
+      }
+    }
+
+    async function initDashboard() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+        try {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && typeof saved === `object`) {
+            appState = {
+              checklist: saved.checklist || {},
+              activeMarco: saved.activeMarco || `de16`,
+              activeStep: typeof saved.activeStep === `number` ? saved.activeStep : 0
+            };
+          }
+        } catch (err) {
+          /* start with default state */
+        }
+      }
+
+      const marcoBtns = document.querySelectorAll(`#modulo-marco .seg-btn`);
+      const marcoKeys = [`de16`, `ley85`, `est2`, `est3`];
+      const marcoIdx = Math.max(0, marcoKeys.indexOf(appState.activeMarco));
+      selectMarcoTab(marcoKeys[marcoIdx], marcoBtns[marcoIdx] || null);
+
+      evaluateRequest();
+      const firstSpaceBtn = document.querySelector(`#modulo-infraestructura .option-card`);
+      selectSpace(`canchas`, firstSpaceBtn);
+
+      const firstAllianceBtn = document.querySelector(`#modulo-alianzas .seg-btn`);
+      selectAlliance(`integracion`, firstAllianceBtn);
+
+      const stepBtns = document.querySelectorAll(`.stepper-track .step-btn`);
+      const stepIdx = Math.min(STEPS_DATA.length - 1, Math.max(0, appState.activeStep));
+      selectStep(stepIdx, stepBtns[stepIdx] || null);
+
+      renderChecklist();
+      renderMatrix();
+      buildHealthChart();
+
+      if (window.lucide && typeof window.lucide.createIcons === `function`) {
+        window.lucide.createIcons();
+      }
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    if (document.readyState === `loading`) {
+      document.addEventListener(`DOMContentLoaded`, initDashboard);
+    } else {
+      initDashboard();
+    }
+  </script>
+</body>
+</html>
